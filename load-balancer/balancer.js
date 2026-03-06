@@ -1,0 +1,85 @@
+const express = require("express");
+const axios = require("axios");
+
+const app = express();
+app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Fraud Detection Load Balancer Running");
+});
+const instances = [
+    "http://api1:3000",
+    "http://api2:3000",
+    "http://api3:3000"
+];
+
+
+async function getHealthScores(){
+
+    const scores = [];
+
+    for(const url of instances){
+
+        try{
+
+            const r = await axios.get(`${url}/health`);
+
+            scores.push({
+                url,
+                uptime: r.data.uptime,
+                latency: r.data.latency,
+                load: r.data.load,
+                errorRate: r.data.errorRate
+            });
+
+        }catch{
+
+            scores.push({
+                url,
+                uptime: 0
+            });
+
+        }
+
+    }
+
+    return scores;
+
+}
+let index = 0;
+
+function selectBestInstance() {
+
+    const target = instances[index % instances.length];
+
+    index++;
+
+    return target;
+
+}
+
+app.post("/fraud-check", async (req,res)=>{
+
+    try{
+
+        const target = selectBestInstance();
+
+        console.log("Routing to:", target);
+
+        const response = await axios.post(
+            `${target}/fraud-check`,
+            req.body
+        );
+
+        res.json(response.data);
+
+    }catch{
+
+        res.status(500).send("routing error");
+
+    }
+
+});
+
+app.listen(4000,()=>{
+    console.log("Load Balancer running on port 4000");
+});

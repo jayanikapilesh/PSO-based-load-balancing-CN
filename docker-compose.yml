@@ -1,0 +1,25 @@
+services:
+
+  api1:
+    build: ./api
+    environment:
+      - INSTANCE_NAME=api1
+
+  api2:
+    build: ./api
+    environment:
+      - INSTANCE_NAME=api2
+
+  api3:
+    build: ./api
+    environment:
+      - INSTANCE_NAME=api3
+
+  lb:
+    build: ./load-balancer
+    ports:
+      - "4000:4000"
+    depends_on:
+      - api1
+      - api2
+      - api3
