@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+const { selectBest } = require("./pso");
 
 const app = express();
 app.use(express.json());
@@ -54,14 +55,24 @@ function selectBestInstance() {
     index++;
 
     return target;
-
 }
 
 app.post("/fraud-check", async (req,res)=>{
 
     try{
 
-        const target = selectBestInstance();
+        const nodes = await getHealthScores();
+        console.log("Nodes:", nodes);
+
+        let target;
+
+        if (nodes && nodes.length > 0) {
+            target = selectBest(nodes);
+        }
+
+        if (!target) {
+            target = instances[0];
+        }
 
         console.log("Routing to:", target);
 
@@ -72,10 +83,9 @@ app.post("/fraud-check", async (req,res)=>{
 
         res.json(response.data);
 
-    }catch{
-
+    }catch(err){
+        console.error("ERROR:", err.message);
         res.status(500).send("routing error");
-
     }
 
 });
