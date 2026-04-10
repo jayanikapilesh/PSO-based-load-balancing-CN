@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+
+# ML Data (Excluding the 143MB CSV)
+ML_implementation/creditcard.csv
+
+# Logs & Artifacts
+logs/
+*.log
+transactions.csv
+
+# Environment
+.env
+.ipynb_checkpoints/
