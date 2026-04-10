@@ -44,19 +44,7 @@ app.post("/fraud-check", async (req, res) => {
 
 
 app.get("/health", (req, res) => {
-
-    const uptime = (Date.now() - startTime) / 1000;
-    const avgLatency = requestCount ? totalLatency / requestCount : 0;
-
-    res.json({
-        status: "UP",
-        uptime,
-        latency: avgLatency,
-        load: activeRequests,
-        errorRate: requestCount ? errorCount / requestCount : 0,
-        instance: os.hostname()
-    });
-
+    res.status(200).send("OK");
 });
 
 app.listen(3000, () => {

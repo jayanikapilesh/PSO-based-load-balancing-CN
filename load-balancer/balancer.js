@@ -14,37 +14,21 @@ const instances = [
 ];
 
 
-async function getHealthScores(){
-
+async function getHealthScores() {
     const scores = [];
-
-    for(const url of instances){
-
-        try{
-
-            const r = await axios.get(`${url}/health`);
-
-            scores.push({
-                url,
-                uptime: r.data.uptime,
-                latency: r.data.latency,
-                load: r.data.load,
-                errorRate: r.data.errorRate
-            });
-
-        }catch{
-
-            scores.push({
-                url,
-                uptime: 0
-            });
-
+    for (const url of instances) {
+        try {
+            const r = await axios.get(`${url}/health`, { timeout: 500 });
+            if (r.status === 200) {
+                scores.push({ url, healthy: true });
+            } else {
+                scores.push({ url, healthy: false });
+            }
+        } catch {
+            scores.push({ url, healthy: false });
         }
-
     }
-
     return scores;
-
 }
 let index = 0;
 
