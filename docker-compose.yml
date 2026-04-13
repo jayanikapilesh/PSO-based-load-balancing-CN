@@ -26,6 +26,8 @@ services:
     container_name: lb
     ports:
       - "4000:4000"
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - api1
       - api2
@@ -40,3 +42,8 @@ services:
       - api1
       - api2
       - api3
+
+  ml-api:
+    build: ./ml-service
+    ports:
+      - "8000:8000"
