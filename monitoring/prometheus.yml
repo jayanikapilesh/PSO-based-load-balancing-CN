@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'load-balancer'
+    static_configs:
+      - targets: ['lb:4000']
+
+  - job_name: 'api-instances'
+    static_configs:
+      - targets: ['api1:3000', 'api2:3000', 'api3:3000']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']

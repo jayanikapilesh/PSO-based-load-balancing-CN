@@ -1,0 +1,367 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "title": "🔢 Total Requests",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "steps": [
+              { "color": "#6ED0E0", "value": null },
+              { "color": "#EAB839", "value": 100 },
+              { "color": "#EF843C", "value": 500 }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "options": { "colorMode": "background", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        { "expr": "sum(fraud_api_requests_total)", "legendFormat": "Total" }
+      ]
+    },
+    {
+      "title": "🚨 Fraud Detected",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 4, "x": 4, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "steps": [
+              { "color": "#299c46", "value": null },
+              { "color": "#FF4444", "value": 1 }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "options": { "colorMode": "background", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        { "expr": "sum(fraud_api_outcomes_total{status=\"FRAUD\"}) or vector(0)", "legendFormat": "Fraud Count" }
+      ]
+    },
+    {
+      "title": "✅ Safe Transactions",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 4, "x": 8, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "steps": [
+              { "color": "#299c46", "value": null }
+            ]
+          },
+          "unit": "short"
+        }
+      },
+      "options": { "colorMode": "background", "graphMode": "area", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        { "expr": "sum(fraud_api_outcomes_total{status=\"SAFE\"}) or vector(0)", "legendFormat": "Safe Count" }
+      ]
+    },
+    {
+      "title": "⚡ Avg Latency",
+      "type": "gauge",
+      "gridPos": { "h": 5, "w": 4, "x": 12, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.5 },
+              { "color": "red", "value": 2 }
+            ]
+          },
+          "min": 0,
+          "max": 5,
+          "unit": "s"
+        }
+      },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum by (le) (rate(fraud_api_latency_seconds_bucket[5m])))", "legendFormat": "p50" }
+      ]
+    },
+    {
+      "title": "🟢 Active Instances",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 4, "x": 16, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "yellow", "value": 2 },
+              { "color": "green", "value": 3 }
+            ]
+          }
+        }
+      },
+      "options": { "colorMode": "background", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        { "expr": "count(up{job=\"api-instances\"} == 1)", "legendFormat": "Healthy" }
+      ]
+    },
+    {
+      "title": "📊 Fraud Detection Rate %",
+      "type": "gauge",
+      "gridPos": { "h": 5, "w": 4, "x": 20, "y": 1 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 10 },
+              { "color": "red", "value": 30 }
+            ]
+          },
+          "min": 0,
+          "max": 100,
+          "unit": "percent"
+        }
+      },
+      "targets": [
+        { "expr": "(sum(fraud_api_outcomes_total{status=\"FRAUD\"}) / sum(fraud_api_outcomes_total)) * 100 or vector(0)", "legendFormat": "Fraud %" }
+      ]
+    },
+    {
+      "title": "🔴 Live Fraud Flagging — Requests Over Time",
+      "description": "Real-time view of FRAUD (red) vs SAFE (green) transaction rates",
+      "type": "timeseries",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 30, "gradientMode": "scheme", "showPoints": "auto", "pointSize": 5 }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "🚨 FRAUD" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#FF4444", "mode": "fixed" } },
+              { "id": "custom.fillOpacity", "value": 40 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "✅ SAFE" },
+            "properties": [
+              { "id": "color", "value": { "fixedColor": "#73BF69", "mode": "fixed" } },
+              { "id": "custom.fillOpacity", "value": 20 }
+            ]
+          }
+        ]
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["sum", "lastNotNull"] } },
+      "targets": [
+        { "expr": "sum(rate(fraud_api_outcomes_total{status=\"FRAUD\"}[30s]))", "legendFormat": "🚨 FRAUD" },
+        { "expr": "sum(rate(fraud_api_outcomes_total{status=\"SAFE\"}[30s]))", "legendFormat": "✅ SAFE" }
+      ]
+    },
+    {
+      "title": "📈 Live Requests Per Second (Per Instance)",
+      "description": "Shows how PSO routes traffic across instances in real-time",
+      "type": "timeseries",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme", "showPoints": "auto", "pointSize": 4 },
+          "unit": "reqps"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "api1" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#FF9830", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "api2" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#7EB26D", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "api3" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#6ED0E0", "mode": "fixed" } }]
+          }
+        ]
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "targets": [
+        { "expr": "rate(fraud_api_requests_total{job=\"api-instances\"}[30s])", "legendFormat": "{{instance}}" }
+      ]
+    },
+    {
+      "title": "🖥️ Container CPU Usage",
+      "description": "CPU usage per container from cAdvisor",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 20, "gradientMode": "scheme" },
+          "unit": "percentunit"
+        }
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "targets": [
+        { "expr": "rate(container_cpu_usage_seconds_total{name=~\"api1|api2|api3|lb|healer\"}[1m])", "legendFormat": "{{name}}" }
+      ]
+    },
+    {
+      "title": "💾 Container Memory Usage",
+      "description": "Memory usage per container from cAdvisor",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 15 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 20, "gradientMode": "scheme" },
+          "unit": "bytes"
+        }
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "targets": [
+        { "expr": "container_memory_usage_bytes{name=~\"api1|api2|api3|lb|healer\"}", "legendFormat": "{{name}}" }
+      ]
+    },
+    {
+      "title": "⏱️ API Latency Percentiles",
+      "description": "p50, p95, p99 latency distribution",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "gradientMode": "scheme" },
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "p99" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#E02F44", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "p95" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#FF9830", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "p50" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#73BF69", "mode": "fixed" } }]
+          }
+        ]
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum by (le) (rate(fraud_api_latency_seconds_bucket[1m])))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum by (le) (rate(fraud_api_latency_seconds_bucket[1m])))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, sum by (le) (rate(fraud_api_latency_seconds_bucket[1m])))", "legendFormat": "p99" }
+      ]
+    },
+    {
+      "title": "🔀 PSO Load Balancer — Routing Distribution",
+      "description": "How PSO algorithm distributes traffic",
+      "type": "piechart",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 23 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "values": ["percent", "value"] }, "pieType": "donut" },
+      "targets": [
+        { "expr": "sum by (target) (pso_routing_decisions_total)", "legendFormat": "{{target}}" }
+      ]
+    },
+    {
+      "title": "🏥 Instance Health Status",
+      "description": "UP (1) or DOWN (0) per API instance",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 23 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            { "options": { "0": { "text": "🔴 DOWN", "color": "red" }, "1": { "text": "🟢 UP", "color": "green" } }, "type": "value" }
+          ],
+          "thresholds": {
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        }
+      },
+      "options": { "colorMode": "background", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"] }, "textMode": "value_and_name" },
+      "targets": [
+        { "expr": "up{job=\"api-instances\"}", "legendFormat": "{{instance}}" }
+      ]
+    },
+    {
+      "title": "🖥️ Process CPU (Node.js Instances)",
+      "description": "CPU seconds used by each Node.js API process",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 31 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme" },
+          "unit": "percentunit"
+        }
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "targets": [
+        { "expr": "rate(process_cpu_user_seconds_total{job=\"api-instances\"}[1m])", "legendFormat": "{{instance}} (user)" },
+        { "expr": "rate(process_cpu_system_seconds_total{job=\"api-instances\"}[1m])", "legendFormat": "{{instance}} (system)" }
+      ]
+    },
+    {
+      "title": "📦 Process Memory (Node.js Heap)",
+      "description": "Heap memory used vs total by each API instance",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 31 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "lineWidth": 2, "fillOpacity": 15, "gradientMode": "scheme" },
+          "unit": "bytes"
+        }
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "max"] } },
+      "targets": [
+        { "expr": "nodejs_heap_size_used_bytes{job=\"api-instances\"}", "legendFormat": "{{instance}} (used)" },
+        { "expr": "process_resident_memory_bytes{job=\"api-instances\"}", "legendFormat": "{{instance}} (RSS)" }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "time": { "from": "now-15m", "to": "now" },
+  "refresh": "5s",
+  "title": "🛡️ Self-Healing Fraud Detection System",
+  "uid": "fraud-detection-dashboard",
+  "version": 2
+}
