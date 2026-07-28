@@ -1,0 +1,12 @@
+{
+  "demo-user": {
+    "userId": "demo-user",
+    "averageHoldTime": 78,
+    "averageFlightTime": 193,
+    "typingSpeed": 25,
+    "backspaceCount": 0,
+    "errorCount": 0,
+    "typingDuration": 30.5,
+    "updatedAt": "2026-07-04T11:02:41.161Z"
+  }
+}

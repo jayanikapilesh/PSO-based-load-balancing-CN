@@ -1,0 +1,11 @@
+{
+  "module": "API Configuration & Administrative Security",
+  "version": "1.0.0",
+  "updatedAt": "2026-07-28T12:00:00Z",
+  "api": {
+    "rateLimitPerMinute": 100,
+    "jwtExpiryHours": 8,
+    "jwtIssuer": "fraud-prevention-platform-admin",
+    "requireMfaForAdmin": true
+  }
+}

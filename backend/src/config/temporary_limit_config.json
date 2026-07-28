@@ -1,0 +1,11 @@
+{
+  "module": "Dynamic Temporary Limit Engine",
+  "version": "1.0.0",
+  "updatedAt": "2026-07-28T12:00:00Z",
+  "temporaryLimits": {
+    "maxTemporaryBoostPercent": 50,
+    "maxBoostDurationMinutes": 60,
+    "stepUpVerificationRequired": true,
+    "cooldownPeriodHours": 24
+  }
+}

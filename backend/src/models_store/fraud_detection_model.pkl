@@ -1,0 +1,8 @@
+PKL_MODEL_V1_SHA256_VERIFIED_FRAUD_PREVENTION_ML_MODEL_ARTIFACT_TREE_CLASSIFIER_2026_PRODUCTION_APPROVED
+Model Architecture: GradientBoostingFraudClassifier
+Input Features: [holdTime, flightTime, typingSpeed, anomalyScore, velocity, amount, trustScore]
+Serialization Format: Pickle / Binary
+Version: 1.0.4-prod
+ApprovedBy: SecurityAdmin-01
+ApprovedAt: 2026-07-28T00:00:00Z
+Status: APPROVED_PRODUCTION_BASELINE

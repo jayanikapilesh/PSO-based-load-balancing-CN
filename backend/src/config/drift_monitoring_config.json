@@ -1,0 +1,11 @@
+{
+  "module": "Drift-Aware Machine Learning Monitoring",
+  "version": "1.0.0",
+  "updatedAt": "2026-07-28T12:00:00Z",
+  "driftDetection": {
+    "sampleWindowSize": 1000,
+    "ksPValueThreshold": 0.05,
+    "psiThreshold": 0.25,
+    "autoRetainWindowDays": 30
+  }
+}

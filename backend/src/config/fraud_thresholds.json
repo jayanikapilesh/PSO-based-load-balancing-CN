@@ -1,0 +1,7 @@
+{
+  "lowRiskMaxAmount": 750,
+  "mediumRiskMaxAmount": 2500,
+  "highRiskMaxAmount": 10000,
+  "anomalyScoreThreshold": 0.75,
+  "velocityLimitPerMinute": 5
+}
