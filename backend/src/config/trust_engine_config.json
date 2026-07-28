@@ -1,0 +1,16 @@
+{
+  "module": "Dynamic Trust Score Engine",
+  "version": "1.0.0",
+  "updatedAt": "2026-07-28T10:14:53.959Z",
+  "weights": {
+    "behavioralBiometricsWeight": 0.35,
+    "deviceFingerprintWeight": 0.25,
+    "transactionHistoryWeight": 0.2,
+    "ipReputationWeight": 0.2
+  },
+  "trustScoreThresholds": {
+    "trusted": 80,
+    "neutral": 50,
+    "untrusted": 30
+  }
+}

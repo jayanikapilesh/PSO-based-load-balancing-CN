@@ -1,0 +1,83 @@
+{
+  "ml-model-pkl": {
+    "id": "ml-model-pkl",
+    "name": "Fraud Detection ML Model (.pkl)",
+    "path": "src/models_store/fraud_detection_model.pkl",
+    "category": "Machine Learning Model",
+    "referenceHash": "a0f0ee12ef637a2df5dc81c85c0dbefe9c7c0d2ffd6f728b0776f57f94a98d47",
+    "createdAt": "2026-07-28T10:14:53.963Z",
+    "verifiedAt": "2026-07-28T10:14:53.963Z"
+  },
+  "cfg-fraud-thresholds": {
+    "id": "cfg-fraud-thresholds",
+    "name": "Fraud Threshold Configuration",
+    "path": "src/config/fraud_thresholds.json",
+    "category": "Configuration",
+    "referenceHash": "df0c8fbef098de666e56fc64cb30edf57ba7b5293c816f2e7cc4b945bac16ca2",
+    "createdAt": "2026-07-28T10:14:53.965Z",
+    "verifiedAt": "2026-07-28T10:15:25.989Z"
+  },
+  "cfg-trust-engine": {
+    "id": "cfg-trust-engine",
+    "name": "Trust Engine Configuration",
+    "path": "src/config/trust_engine_config.json",
+    "category": "Trust Engine",
+    "referenceHash": "54ecd7d523353272fcbb61c2950f12e61144abfcffc5c8e84079ab34d8ccdd95",
+    "createdAt": "2026-07-28T10:14:53.966Z",
+    "verifiedAt": "2026-07-28T10:14:53.966Z"
+  },
+  "cfg-risk-classification": {
+    "id": "cfg-risk-classification",
+    "name": "Risk Classification Configuration",
+    "path": "src/config/risk_classification_config.json",
+    "category": "Risk Classification",
+    "referenceHash": "ce5f851468804ca490c3e0c16160dc924b0ebfab13a99e0e24b9010184515b60",
+    "createdAt": "2026-07-28T10:14:53.968Z",
+    "verifiedAt": "2026-07-28T10:14:53.968Z"
+  },
+  "cfg-drift-monitoring": {
+    "id": "cfg-drift-monitoring",
+    "name": "Drift Monitoring Configuration",
+    "path": "src/config/drift_monitoring_config.json",
+    "category": "Drift Monitoring",
+    "referenceHash": "92665b1a71df232de05b0d901607b8e3bc668b46b7f17584dd1c3edbd5f81056",
+    "createdAt": "2026-07-28T10:14:53.969Z",
+    "verifiedAt": "2026-07-28T10:14:53.969Z"
+  },
+  "cfg-emergency-policy": {
+    "id": "cfg-emergency-policy",
+    "name": "Emergency Policy Configuration",
+    "path": "src/config/emergency_policy_config.json",
+    "category": "Emergency Mode",
+    "referenceHash": "0515b418a9701c177ca21ce21846e4ff03a6785380a679b8bde7fd34f5f451e0",
+    "createdAt": "2026-07-28T10:14:53.971Z",
+    "verifiedAt": "2026-07-28T10:14:53.971Z"
+  },
+  "cfg-temporary-limit": {
+    "id": "cfg-temporary-limit",
+    "name": "Temporary Limit Configuration",
+    "path": "src/config/temporary_limit_config.json",
+    "category": "Temporary Limit Engine",
+    "referenceHash": "068d4af2a5b4e3851a8a9347caa071895188509e9c592c689cc2f1c9e3730f51",
+    "createdAt": "2026-07-28T10:14:53.972Z",
+    "verifiedAt": "2026-07-28T10:14:53.972Z"
+  },
+  "cfg-api": {
+    "id": "cfg-api",
+    "name": "API Security Configuration",
+    "path": "src/config/api_config.json",
+    "category": "API Security",
+    "referenceHash": "6c2bb415802b0776134b34e0b3e56cc05ae7edd549d6c3fd337e42425dcde555",
+    "createdAt": "2026-07-28T10:14:53.974Z",
+    "verifiedAt": "2026-07-28T10:14:53.974Z"
+  },
+  "env-config": {
+    "id": "env-config",
+    "name": "Environment Configuration (.env)",
+    "path": ".env",
+    "category": "Environment",
+    "referenceHash": "a37c2d58ea51ecc5a10d20d5a7f36e84d5d45890f5d6ad9b08adfb1bc9fb3cd9",
+    "createdAt": "2026-07-28T10:14:53.975Z",
+    "verifiedAt": "2026-07-28T10:14:53.975Z"
+  }
+}
