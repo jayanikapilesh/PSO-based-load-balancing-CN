@@ -2,6 +2,10 @@
   "name": "fraud-lb",
   "version": "1.0.0",
   "main": "balancer.js",
+  "scripts": {
+    "start": "node balancer.js",
+    "test": "node tests/pso.test.js"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "axios": "^1.6.0",

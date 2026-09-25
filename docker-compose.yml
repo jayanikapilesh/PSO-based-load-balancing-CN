@@ -6,6 +6,7 @@ services:
     restart: always
     environment:
       - INSTANCE_NAME=api1
+      - ERROR_RATE_WINDOW_S=60
 
   api2:
     build: ./api
@@ -13,6 +14,7 @@ services:
     restart: always
     environment:
       - INSTANCE_NAME=api2
+      - ERROR_RATE_WINDOW_S=60
 
   api3:
     build: ./api
@@ -20,6 +22,7 @@ services:
     restart: always
     environment:
       - INSTANCE_NAME=api3
+      - ERROR_RATE_WINDOW_S=60
 
   lb:
     build: ./load-balancer
@@ -32,6 +35,52 @@ services:
       - api1
       - api2
       - api3
+    environment:
+      # ── Routing Algorithm ────────────────────────────────────────────────────
+      # Options: PSO | PSO_WITHOUT_SOFTMAX | PSO_LINEAR_FITNESS |
+      #          FIXED_HEALTH | ROUND_ROBIN | LEAST_CONNECTIONS
+      - ROUTING_ALGORITHM=${ROUTING_ALGORITHM:-PSO}
+
+      # ── PSO Core Parameters ──────────────────────────────────────────────────
+      - PSO_PARTICLES=8
+      - PSO_ITERATIONS=30
+      - PSO_INERTIA=0.7
+      - PSO_COGNITIVE=1.5
+      - PSO_SOCIAL=1.5
+      - PSO_MIN_WEIGHT=0.01
+      - PSO_MAX_WEIGHT=0.80
+
+      # ── Timing ───────────────────────────────────────────────────────────────
+      # How often PSO optimization runs (ms). PSO does NOT run per-request.
+      - PSO_INTERVAL_MS=5000
+
+      # ── Softmax Temperature ───────────────────────────────────────────────────
+      # Original implementation value: 2.0
+      - SOFTMAX_TEMPERATURE=2.0
+
+      # ── Reproducibility ───────────────────────────────────────────────────────
+      # Set to 0 for time-based (non-reproducible) seed.
+      - RANDOM_SEED=42
+
+      # ── Fitness Function Scaling ──────────────────────────────────────────────
+      - ALPHA_LATENCY=3.0
+      - ALPHA_REQUESTS=2.0
+      - ALPHA_ERROR=4.0
+      - ALPHA_CPU=2.5
+      - BETA_UPTIME=5.0
+      - TARGET_LATENCY=50.0
+
+      # ── Health Metric Windows ─────────────────────────────────────────────────
+      - ERROR_RATE_WINDOW_S=60
+      - UPTIME_WINDOW_POLLS=60
+      - CPU_REFRESH_MS=5000
+
+      # ── Prometheus URL for CPU queries ────────────────────────────────────────
+      - PROMETHEUS_URL=http://prometheus:9090
+
+      # ── Convergence logging ───────────────────────────────────────────────────
+      - PSO_CONVERGENCE_LOG=/app/logs/pso_convergence.jsonl
+      - EXPERIMENT_LOG=/app/logs/experiment_results.jsonl
 
   healer:
     build: ./healer
@@ -45,8 +94,14 @@ services:
 
   ml-api:
     build: ./ml-service
+    container_name: ml-api
     ports:
       - "8000:8000"
+    environment:
+      # Fraud probability threshold.
+      # MUST match the threshold used in the notebook and manuscript.
+      # Default: 0.3 (original value — do not change without updating all references)
+      - FRAUD_THRESHOLD=0.3
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest

@@ -3,6 +3,7 @@ from typing import Union
 import joblib
 import numpy as np
 import random
+import os
 
 app = FastAPI()
 
@@ -11,6 +12,18 @@ lr = joblib.load("models/lr.pkl")
 rf = joblib.load("models/rf.pkl")
 xgb = joblib.load("models/xgb.pkl")
 scaler = joblib.load("models/scaler.pkl")
+
+# ── Fraud threshold ─────────────────────────────────────────────────────────────
+# Configurable via FRAUD_THRESHOLD environment variable.
+# Default: 0.3 — preserved from original implementation.
+#
+# IMPORTANT: Do NOT change this default without updating:
+#   1. The Jupyter notebook (ML_implementation/fraud-detection.ipynb)
+#   2. Experiment documentation
+#   3. The research manuscript
+#
+# The threshold at deployment MUST match the threshold used in evaluation.
+FRAUD_THRESHOLD = float(os.environ.get("FRAUD_THRESHOLD", "0.3"))
 
 @app.post("/predict")
 def predict(data: Union[list, dict] = Body(...)):
@@ -39,7 +52,12 @@ def predict(data: Union[list, dict] = Body(...)):
 
         return {
             "fraud_probability": float(prob),
-            "prediction": int(prob > 0.3)
+            "prediction": int(prob > FRAUD_THRESHOLD),
+            "threshold_used": FRAUD_THRESHOLD
         }
     except Exception as e:
         return {"error": str(e)}
+
+@app.get("/health")
+def health():
+    return {"status": "OK", "fraud_threshold": FRAUD_THRESHOLD}
