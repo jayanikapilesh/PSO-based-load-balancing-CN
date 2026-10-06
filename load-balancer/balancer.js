@@ -40,7 +40,7 @@ const config  = require('./config');
 const metrics = require('./metrics');
 const { getHealthState, startCpuRefresh } = require('./health');
 const { normalizeMetrics, computeCost, computeLinearCost } = require('./fitness');
-const { runPSO, getCachedWeights, getSwarmState } = require('./pso');
+const { runPSO, getCachedWeights, getSwarmState, reseed, resetSwarm, getRand } = require('./pso');
 
 const app = express();
 app.use(express.json());
@@ -82,7 +82,8 @@ function softmaxSelect(nodeCosts) {
     const weights = nodeCosts.map(nc => Math.exp(-nc.cost / T));
     const total   = weights.reduce((a, b) => a + b, 0);
 
-    let random = Math.random() * total;
+    const randVal = config.RANDOM_SEED === 0 ? Math.random() : getRand();
+    let random = randVal * total;
     for (let i = 0; i < weights.length; i++) {
         random -= weights[i];
         if (random <= 0) return nodeCosts[i].url;
@@ -231,6 +232,29 @@ app.get('/status', (req, res) => {
             cpuAvailable:   n.cpuAvailable,
             uptimeRatio:    n.uptimeRatio,
         })),
+    });
+});
+
+// Dynamic configuration endpoint — updates routing algorithm & random seed
+app.post('/config', (req, res) => {
+    const { algorithm, seed } = req.body;
+    const VALID_ALGORITHMS = [
+        'PSO', 'PSO_WITHOUT_SOFTMAX', 'PSO_LINEAR_FITNESS',
+        'FIXED_HEALTH', 'ROUND_ROBIN', 'LEAST_CONNECTIONS'
+    ];
+    if (algorithm && VALID_ALGORITHMS.includes(algorithm)) {
+        config.ROUTING_ALGORITHM = algorithm;
+    }
+    if (seed !== undefined && seed !== null) {
+        config.RANDOM_SEED = parseInt(seed, 10);
+        reseed(config.RANDOM_SEED);
+        resetSwarm();
+    }
+    console.log(`[Load Balancer] Re-configured: algorithm=${config.ROUTING_ALGORITHM}, seed=${config.RANDOM_SEED}`);
+    res.json({
+        status: 'ok',
+        algorithm: config.ROUTING_ALGORITHM,
+        seed: config.RANDOM_SEED
     });
 });
 

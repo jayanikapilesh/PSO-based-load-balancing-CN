@@ -36,6 +36,7 @@ async function streamContinuousTraffic() {
         
         try {
             const payload = [
+                parseFloat(row.Time || 0),
                 parseFloat(row.V1 || row.v1 || 0), parseFloat(row.V2 || row.v2 || 0), parseFloat(row.V3 || 0), parseFloat(row.V4 || 0),
                 parseFloat(row.V5 || 0), parseFloat(row.V6 || 0), parseFloat(row.V7 || 0), parseFloat(row.V8 || 0),
                 parseFloat(row.V9 || 0), parseFloat(row.V10 || 0), parseFloat(row.V11 || 0), parseFloat(row.V12 || 0),
@@ -43,7 +44,7 @@ async function streamContinuousTraffic() {
                 parseFloat(row.V17 || 0), parseFloat(row.V18 || 0), parseFloat(row.V19 || 0), parseFloat(row.V20 || 0),
                 parseFloat(row.V21 || 0), parseFloat(row.V22 || 0), parseFloat(row.V23 || 0), parseFloat(row.V24 || 0),
                 parseFloat(row.V25 || 0), parseFloat(row.V26 || 0), parseFloat(row.V27 || 0), parseFloat(row.V28 || 0),
-                parseFloat(row.Amount || 0), parseFloat(row.Time || 0)
+                parseFloat(row.Amount || 0)
             ];
 
             const res = await axios.post(LOAD_BALANCER_URL, payload);
@@ -67,8 +68,8 @@ function injectChaos() {
         const target = Math.floor(Math.random() * 3) + 1;
         const containerName = `api${target}`;
         
-        console.log(`\n🔥 [CHAOS] Injecting random failure! Crashing container: ${containerName}...`);
-        exec(`docker restart ${containerName}`);
+        console.log(`\n🔥 [CHAOS] Injecting random failure! Stopping container: ${containerName}...`);
+        exec(`docker stop ${containerName}`);
     }, CRASH_INTERVAL_MS);
 }
 

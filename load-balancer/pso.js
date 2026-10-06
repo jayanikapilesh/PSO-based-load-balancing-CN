@@ -230,8 +230,8 @@ function runPSO(healthNodes, useLinear = false) {
     // Normalize metrics across healthy nodes
     const nodesNorm = normalizeMetrics(healthNodes);
 
-    // Lazy-initialize swarm
-    if (swarm.length === 0) initSwarm();
+    // Reinitialize swarm for each current health-state cycle to prevent stale pbest/gbest state
+    initSwarm();
 
     optimizationCycle++;
     const cycle = optimizationCycle;
@@ -351,4 +351,8 @@ function resetSwarm() {
     optimizationCycle = 0;
 }
 
-module.exports = { runPSO, getCachedWeights, getSwarmState, resetSwarm, reseed };
+function getRand() {
+    return rand();
+}
+
+module.exports = { runPSO, getCachedWeights, getSwarmState, resetSwarm, reseed, getRand };

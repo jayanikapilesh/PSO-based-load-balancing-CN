@@ -173,20 +173,24 @@ function evaluateObjective(nodesWithNorm, weights, useLinear = false) {
 
     const costFn = useLinear ? computeLinearCost : computeCost;
     const costs = nodesWithNorm.map(n => costFn(n, weights));
-
     const meanCost = costs.reduce((a, b) => a + b, 0) / costs.length;
 
-    // Load imbalance: variance of normalized active requests
-    const reqValues = nodesWithNorm.map(n => n.norm.requests);
-    const meanReq = reqValues.reduce((a, b) => a + b, 0) / reqValues.length;
-    const variance = reqValues.reduce((s, r) => s + Math.pow(r - meanReq, 2), 0) / reqValues.length;
+    // Softmax routing probabilities for nodes under candidate weights
+    const T = config.SOFTMAX_TEMPERATURE;
+    const expNegCost = costs.map(c => Math.exp(-c / T));
+    const totalExp = expNegCost.reduce((a, b) => a + b, 0);
+    const probs = expNegCost.map(e => (totalExp > 0 ? e / totalExp : 1 / nodesWithNorm.length));
 
-    // Max penalties
-    const maxLatency = Math.max(...nodesWithNorm.map(n => n.norm.latency));
-    const maxError   = Math.max(...nodesWithNorm.map(n => n.norm.error));
+    // Load imbalance: variance of Softmax node allocation probabilities under candidate weights
+    const meanProb = 1 / nodesWithNorm.length;
+    const loadVariance = probs.reduce((s, p) => s + Math.pow(p - meanProb, 2), 0) / nodesWithNorm.length;
 
-    // Composite objective (weights are equal for now — could also be tuned)
-    const objective = meanCost + 0.5 * variance + 0.2 * maxLatency + 0.3 * maxError;
+    // Expected system latency and error rate weighted by routing probabilities under candidate weights
+    const expectedLatency = probs.reduce((s, p, i) => s + p * nodesWithNorm[i].norm.latency, 0);
+    const expectedError   = probs.reduce((s, p, i) => s + p * nodesWithNorm[i].norm.error, 0);
+
+    // Composite objective (all terms depend directly on candidate weight vector)
+    const objective = meanCost + 0.5 * loadVariance + 0.2 * expectedLatency + 0.3 * expectedError;
     return objective;
 }
 

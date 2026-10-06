@@ -81,8 +81,14 @@ async function runExperiment(opts) {
     console.log(`[Experiment] Load balancer: ${opts.lbUrl}`);
     console.log(`[Experiment] Output: ${opts.output}`);
 
-    // Check LB is reachable and strictly validate CPU metrics availability
+    // Check LB is reachable and configure algorithm & seed on LB container
     try {
+        const configRes = await axios.post(`${opts.lbUrl}/config`, {
+            algorithm: opts.algorithm,
+            seed: opts.seed,
+        }, { timeout: 3000 });
+        console.log(`[Experiment] LB configured: algorithm=${configRes.data.algorithm}, seed=${configRes.data.seed}`);
+
         const statusRes = await axios.get(`${opts.lbUrl}/status`, { timeout: 3000 });
         const state = statusRes.data;
         
@@ -100,30 +106,33 @@ async function runExperiment(opts) {
             }
         }
     } catch (e) {
-        console.error('[Experiment] ERROR: Load balancer not reachable or status check failed:', e.message);
+        console.error('[Experiment] ERROR: Load balancer not reachable or config update failed:', e.message);
         console.error('[Experiment] Ensure docker compose is running and try again.');
         process.exit(1);
     }
 
-    const intervalMs   = Math.round(1000 / opts.rps);
-    const durationMs   = opts.duration * 1000;
-    const startTime    = Date.now();
-    const perSecond    = [];
-    const allLatencies = [];
-    let totalRequests  = 0;
-    let totalErrors    = 0;
+    const intervalMs       = Math.round(1000 / opts.rps);
+    const durationMs       = opts.duration * 1000;
+    const startTime        = Date.now();
+    const inFlightPromises = [];
+    const allLatencies     = [];
 
-    let currentSecond  = 0;
-    let secRequests    = 0;
-    let secErrors      = 0;
-    let secLatencies   = [];
+    let offeredRequests    = 0;
+    let successfulRequests = 0;
+    let failedRequests     = 0;
+
+    const perSecond        = [];
+    let currentSecond      = 0;
+    let secRequests        = 0;
+    let secErrors          = 0;
+    let secLatencies       = [];
 
     function flushSecond() {
         if (secRequests > 0 || currentSecond > 0) {
             perSecond.push({
-                second:    currentSecond,
-                requests:  secRequests,
-                errors:    secErrors,
+                second:     currentSecond,
+                requests:   secRequests,
+                errors:     secErrors,
                 avgLatency: secLatencies.length > 0
                     ? secLatencies.reduce((a, b) => a + b, 0) / secLatencies.length
                     : 0,
@@ -136,83 +145,105 @@ async function runExperiment(opts) {
         currentSecond++;
     }
 
-    return new Promise((resolve) => {
-        const secondTick = setInterval(() => {
-            flushSecond();
-        }, 1000);
+    const secondTick = setInterval(() => {
+        flushSecond();
+    }, 1000);
 
-        const requestTick = setInterval(async () => {
-            if (Date.now() - startTime >= durationMs) {
-                clearInterval(requestTick);
-                clearInterval(secondTick);
-                flushSecond();
-
-                // Build summary
-                const avgLatency = allLatencies.length > 0
-                    ? allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length
-                    : 0;
-                const p95 = percentile(allLatencies, 95);
-                const errorRate = totalRequests > 0 ? totalErrors / totalRequests : 0;
-                const throughput = totalRequests / opts.duration;
-
-                const result = {
-                    meta: {
-                        timestamp:  new Date().toISOString(),
-                        algorithm:  opts.algorithm,
-                        duration:   opts.duration,
-                        rps:        opts.rps,
-                        seed:       opts.seed,
-                        lbUrl:      opts.lbUrl,
-                    },
-                    summary: {
-                        totalRequests,
-                        totalErrors,
-                        throughput:       parseFloat(throughput.toFixed(3)),
-                        avgLatency:       parseFloat(avgLatency.toFixed(2)),
-                        p95Latency:       parseFloat(p95.toFixed(2)),
-                        errorRate:        parseFloat(errorRate.toFixed(6)),
-                    },
-                    perSecond,
-                };
-
-                // Save result
-                const outDir = path.dirname(opts.output);
-                if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-                fs.writeFileSync(opts.output, JSON.stringify(result, null, 2));
-
-                console.log('\n[Experiment] Complete!');
-                console.log(`  Total requests : ${totalRequests}`);
-                console.log(`  Total errors   : ${totalErrors}`);
-                console.log(`  Throughput     : ${throughput.toFixed(2)} req/s`);
-                console.log(`  Avg latency    : ${avgLatency.toFixed(2)} ms`);
-                console.log(`  P95 latency    : ${p95.toFixed(2)} ms`);
-                console.log(`  Error rate     : ${(errorRate * 100).toFixed(2)}%`);
-                console.log(`  Result saved   : ${opts.output}`);
-
-                resolve(result);
+    // Controlled request dispatch loop
+    await new Promise((resolve) => {
+        const dispatchTick = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            if (elapsed >= durationMs) {
+                clearInterval(dispatchTick);
+                resolve();
                 return;
             }
 
-            // Fire one request
+            offeredRequests++;
             const reqStart = Date.now();
-            try {
-                await axios.post(`${opts.lbUrl}/transaction`, SAMPLE_PAYLOAD, { timeout: 5000 });
-                const lat = Date.now() - reqStart;
-                secLatencies.push(lat);
-                allLatencies.push(lat);
-                secRequests++;
-                totalRequests++;
-            } catch (err) {
-                const lat = Date.now() - reqStart;
-                allLatencies.push(lat);
-                secLatencies.push(lat);
-                secRequests++;
-                secErrors++;
-                totalRequests++;
-                totalErrors++;
-            }
+            const p = axios.post(`${opts.lbUrl}/transaction`, SAMPLE_PAYLOAD, { timeout: 5000 })
+                .then(() => {
+                    const lat = Date.now() - reqStart;
+                    successfulRequests++;
+                    secRequests++;
+                    secLatencies.push(lat);
+                    allLatencies.push(lat);
+                })
+                .catch(() => {
+                    const lat = Date.now() - reqStart;
+                    failedRequests++;
+                    secRequests++;
+                    secErrors++;
+                    secLatencies.push(lat);
+                    allLatencies.push(lat);
+                });
+
+            inFlightPromises.push(p);
         }, intervalMs);
     });
+
+    // Wait for ALL in-flight requests to complete before flushes & summary calculations
+    console.log(`[Experiment] Awaiting ${inFlightPromises.length} in-flight requests...`);
+    await Promise.allSettled(inFlightPromises);
+
+    clearInterval(secondTick);
+    flushSecond();
+
+    const actualDurationSec = (Date.now() - startTime) / 1000;
+    const completedRequests = successfulRequests + failedRequests;
+    const offeredRps        = offeredRequests / actualDurationSec;
+    const throughput        = successfulRequests / actualDurationSec;
+    const errorRate         = completedRequests > 0 ? failedRequests / completedRequests : 0;
+
+    const avgLatency = allLatencies.length > 0
+        ? allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length
+        : 0;
+    const p95 = percentile(allLatencies, 95);
+
+    const result = {
+        meta: {
+            timestamp:          new Date().toISOString(),
+            algorithm:          opts.algorithm,
+            duration:           opts.duration,
+            targetRps:          opts.rps,
+            seed:               opts.seed,
+            lbUrl:              opts.lbUrl,
+            actualDurationSec:  parseFloat(actualDurationSec.toFixed(3)),
+        },
+        summary: {
+            offeredRequests,
+            completedRequests,
+            successfulRequests,
+            failedRequests,
+            totalRequests:      completedRequests,
+            totalErrors:        failedRequests,
+            offeredRps:         parseFloat(offeredRps.toFixed(3)),
+            throughput:         parseFloat(throughput.toFixed(3)),
+            avgLatency:         parseFloat(avgLatency.toFixed(2)),
+            p95Latency:         parseFloat(p95.toFixed(2)),
+            errorRate:          parseFloat(errorRate.toFixed(6)),
+        },
+        perSecond,
+    };
+
+    // Save result
+    const outDir = path.dirname(opts.output);
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(opts.output, JSON.stringify(result, null, 2));
+
+    console.log('\n[Experiment] Complete!');
+    console.log(`  Offered requests    : ${offeredRequests}`);
+    console.log(`  Completed requests  : ${completedRequests}`);
+    console.log(`  Successful requests : ${successfulRequests}`);
+    console.log(`  Failed requests     : ${failedRequests}`);
+    console.log(`  Target / Offered RPS: ${opts.rps} / ${offeredRps.toFixed(2)} req/s`);
+    console.log(`  Achieved Throughput : ${throughput.toFixed(2)} req/s`);
+    console.log(`  Avg latency         : ${avgLatency.toFixed(2)} ms`);
+    console.log(`  P95 latency         : ${p95.toFixed(2)} ms`);
+    console.log(`  Error rate          : ${(errorRate * 100).toFixed(2)}%`);
+    console.log(`  Result saved        : ${opts.output}`);
+
+    return result;
 }
 
 function percentile(arr, p) {
