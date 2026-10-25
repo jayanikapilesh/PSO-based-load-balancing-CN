@@ -1,0 +1,26 @@
+[
+  {
+    "algorithm": "PSO",
+    "avgRoutingDecisionMs": 25.969,
+    "p95RoutingDecisionMs": 29.285,
+    "psoOptimizationAvgMs": 609.256
+  },
+  {
+    "algorithm": "ROUND_ROBIN",
+    "avgRoutingDecisionMs": 21.534,
+    "p95RoutingDecisionMs": 29.689,
+    "psoOptimizationAvgMs": 609.256
+  },
+  {
+    "algorithm": "LEAST_CONNECTIONS",
+    "avgRoutingDecisionMs": 20.184,
+    "p95RoutingDecisionMs": 24.828,
+    "psoOptimizationAvgMs": 609.256
+  },
+  {
+    "algorithm": "FIXED_HEALTH",
+    "avgRoutingDecisionMs": 18.535,
+    "p95RoutingDecisionMs": 22.189,
+    "psoOptimizationAvgMs": 609.256
+  }
+]

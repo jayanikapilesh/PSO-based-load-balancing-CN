@@ -1,0 +1,440 @@
+{
+  "meta": {
+    "timestamp": "2026-09-25T13:38:28.002Z",
+    "algorithm": "LEAST_CONNECTIONS",
+    "duration": 60,
+    "rps": 5,
+    "seed": 42,
+    "lbUrl": "http://localhost:4000"
+  },
+  "summary": {
+    "totalRequests": 295,
+    "totalErrors": 0,
+    "throughput": 4.917,
+    "avgLatency": 46.51,
+    "p95Latency": 67,
+    "errorRate": 0
+  },
+  "perSecond": [
+    {
+      "second": 0,
+      "requests": 4,
+      "errors": 0,
+      "avgLatency": 64.25,
+      "p95Latency": 81
+    },
+    {
+      "second": 1,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 49.6,
+      "p95Latency": 70
+    },
+    {
+      "second": 2,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 57.4,
+      "p95Latency": 76
+    },
+    {
+      "second": 3,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 51.6,
+      "p95Latency": 60
+    },
+    {
+      "second": 4,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 64,
+      "p95Latency": 75
+    },
+    {
+      "second": 5,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 55.6,
+      "p95Latency": 65
+    },
+    {
+      "second": 6,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 53.8,
+      "p95Latency": 57
+    },
+    {
+      "second": 7,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 46.2,
+      "p95Latency": 60
+    },
+    {
+      "second": 8,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 56.4,
+      "p95Latency": 67
+    },
+    {
+      "second": 9,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 54.8,
+      "p95Latency": 67
+    },
+    {
+      "second": 10,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 52,
+      "p95Latency": 63
+    },
+    {
+      "second": 11,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 51.2,
+      "p95Latency": 65
+    },
+    {
+      "second": 12,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 45.2,
+      "p95Latency": 59
+    },
+    {
+      "second": 13,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 47.8,
+      "p95Latency": 55
+    },
+    {
+      "second": 14,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 53.4,
+      "p95Latency": 91
+    },
+    {
+      "second": 15,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 38.6,
+      "p95Latency": 45
+    },
+    {
+      "second": 16,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 42,
+      "p95Latency": 48
+    },
+    {
+      "second": 17,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 41.2,
+      "p95Latency": 48
+    },
+    {
+      "second": 18,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 41.4,
+      "p95Latency": 46
+    },
+    {
+      "second": 19,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 40.2,
+      "p95Latency": 42
+    },
+    {
+      "second": 20,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 37.8,
+      "p95Latency": 45
+    },
+    {
+      "second": 21,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 40.8,
+      "p95Latency": 45
+    },
+    {
+      "second": 22,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 41.4,
+      "p95Latency": 56
+    },
+    {
+      "second": 23,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 47.4,
+      "p95Latency": 57
+    },
+    {
+      "second": 24,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 46,
+      "p95Latency": 50
+    },
+    {
+      "second": 25,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 45.6,
+      "p95Latency": 53
+    },
+    {
+      "second": 26,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 52.6,
+      "p95Latency": 63
+    },
+    {
+      "second": 27,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 53.2,
+      "p95Latency": 69
+    },
+    {
+      "second": 28,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 47.4,
+      "p95Latency": 59
+    },
+    {
+      "second": 29,
+      "requests": 4,
+      "errors": 0,
+      "avgLatency": 46.75,
+      "p95Latency": 55
+    },
+    {
+      "second": 30,
+      "requests": 6,
+      "errors": 0,
+      "avgLatency": 46.666666666666664,
+      "p95Latency": 66
+    },
+    {
+      "second": 31,
+      "requests": 4,
+      "errors": 0,
+      "avgLatency": 43.5,
+      "p95Latency": 48
+    },
+    {
+      "second": 32,
+      "requests": 6,
+      "errors": 0,
+      "avgLatency": 54.666666666666664,
+      "p95Latency": 70
+    },
+    {
+      "second": 33,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 54.4,
+      "p95Latency": 64
+    },
+    {
+      "second": 34,
+      "requests": 4,
+      "errors": 0,
+      "avgLatency": 67,
+      "p95Latency": 83
+    },
+    {
+      "second": 35,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 59,
+      "p95Latency": 85
+    },
+    {
+      "second": 36,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 54.6,
+      "p95Latency": 72
+    },
+    {
+      "second": 37,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 38.8,
+      "p95Latency": 45
+    },
+    {
+      "second": 38,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 47.2,
+      "p95Latency": 63
+    },
+    {
+      "second": 39,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 40.6,
+      "p95Latency": 45
+    },
+    {
+      "second": 40,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 40.6,
+      "p95Latency": 49
+    },
+    {
+      "second": 41,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 37.8,
+      "p95Latency": 42
+    },
+    {
+      "second": 42,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 36,
+      "p95Latency": 42
+    },
+    {
+      "second": 43,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 42,
+      "p95Latency": 44
+    },
+    {
+      "second": 44,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 41.2,
+      "p95Latency": 44
+    },
+    {
+      "second": 45,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 40.2,
+      "p95Latency": 49
+    },
+    {
+      "second": 46,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 38.6,
+      "p95Latency": 45
+    },
+    {
+      "second": 47,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 41.8,
+      "p95Latency": 45
+    },
+    {
+      "second": 48,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 45.8,
+      "p95Latency": 52
+    },
+    {
+      "second": 49,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 40.6,
+      "p95Latency": 51
+    },
+    {
+      "second": 50,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 40.8,
+      "p95Latency": 49
+    },
+    {
+      "second": 51,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 39,
+      "p95Latency": 46
+    },
+    {
+      "second": 52,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 38,
+      "p95Latency": 43
+    },
+    {
+      "second": 53,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 52.4,
+      "p95Latency": 61
+    },
+    {
+      "second": 54,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 43.2,
+      "p95Latency": 58
+    },
+    {
+      "second": 55,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 39.2,
+      "p95Latency": 44
+    },
+    {
+      "second": 56,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 43,
+      "p95Latency": 49
+    },
+    {
+      "second": 57,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 42.8,
+      "p95Latency": 52
+    },
+    {
+      "second": 58,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 38,
+      "p95Latency": 42
+    },
+    {
+      "second": 59,
+      "requests": 2,
+      "errors": 0,
+      "avgLatency": 37.5,
+      "p95Latency": 38
+    }
+  ]
+}

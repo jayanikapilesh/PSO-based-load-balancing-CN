@@ -38,24 +38,30 @@ const path   = require('path');
 function parseArgs() {
     const args = process.argv.slice(2);
     const out = {
-        algorithm: 'PSO',
-        duration:  60,
-        rps:       5,
-        seed:      42,
-        output:    null,
-        lbUrl:     'http://localhost:4000',
+        algorithm:      'PSO',
+        duration:       60,
+        rps:            5,
+        seed:           42,
+        output:         null,
+        lbUrl:          'http://localhost:4000',
+        chaosTarget:    null,
+        chaosTime:      null,
+        experimentType: 'standard',
     };
 
     for (let i = 0; i < args.length; i += 2) {
         const key = args[i].replace('--', '');
         const val = args[i + 1];
         switch (key) {
-            case 'algorithm': out.algorithm = val; break;
-            case 'duration':  out.duration  = parseInt(val, 10); break;
-            case 'rps':       out.rps       = parseFloat(val); break;
-            case 'seed':      out.seed      = parseInt(val, 10); break;
-            case 'output':    out.output    = val; break;
-            case 'lb-url':    out.lbUrl     = val; break;
+            case 'algorithm':       out.algorithm       = val; break;
+            case 'duration':        out.duration        = parseInt(val, 10); break;
+            case 'rps':             out.rps             = parseFloat(val); break;
+            case 'seed':            out.seed            = parseInt(val, 10); break;
+            case 'output':          out.output          = val; break;
+            case 'lb-url':          out.lbUrl           = val; break;
+            case 'chaos-target':    out.chaosTarget     = val; break;
+            case 'chaos-time':      out.chaosTime       = parseInt(val, 10); break;
+            case 'experiment-type': out.experimentType = val; break;
         }
     }
 
@@ -149,11 +155,25 @@ async function runExperiment(opts) {
         flushSecond();
     }, 1000);
 
+    let chaosTimer = null;
+    if (opts.chaosTarget && opts.chaosTime) {
+        chaosTimer = setTimeout(() => {
+            console.log(`\n[Chaos Injection] Stopping target container: ${opts.chaosTarget} at ${opts.chaosTime}s...`);
+            try {
+                require('child_process').execSync(`docker stop ${opts.chaosTarget}`);
+                console.log(`[Chaos Injection] Successfully stopped ${opts.chaosTarget}.`);
+            } catch (err) {
+                console.error(`[Chaos Injection] Error stopping ${opts.chaosTarget}:`, err.message);
+            }
+        }, opts.chaosTime * 1000);
+    }
+
     // Controlled request dispatch loop
     await new Promise((resolve) => {
         const dispatchTick = setInterval(() => {
             const elapsed = Date.now() - startTime;
             if (elapsed >= durationMs) {
+                if (chaosTimer) clearTimeout(chaosTimer);
                 clearInterval(dispatchTick);
                 resolve();
                 return;
@@ -204,10 +224,13 @@ async function runExperiment(opts) {
         meta: {
             timestamp:          new Date().toISOString(),
             algorithm:          opts.algorithm,
+            experimentType:     opts.experimentType || (opts.chaosTarget ? 'failure_recovery' : 'standard'),
             duration:           opts.duration,
             targetRps:          opts.rps,
             seed:               opts.seed,
             lbUrl:              opts.lbUrl,
+            chaosTarget:        opts.chaosTarget || null,
+            chaosTime:          opts.chaosTime || null,
             actualDurationSec:  parseFloat(actualDurationSec.toFixed(3)),
         },
         summary: {

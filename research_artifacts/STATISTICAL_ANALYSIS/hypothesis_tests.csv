@@ -1,0 +1,6 @@
+Comparison,PSO_Mean_ms,Baseline_Mean_ms,Mean_Diff_ms,Welch_t_stat,p_value_welch,p_value_mannwhitney,Cohens_d,Interpretation
+PSO vs ROUND_ROBIN,51.46,49.29,2.17,-0.2829,7.7737e-01,4.5738e-09,-0.0173,PSO adds ~3-5ms routing overhead in steady state
+PSO vs LEAST_CONNECTIONS,51.46,46.51,4.95,0.6717,5.0214e-01,5.3360e-08,0.0403,PSO adds ~3-5ms routing overhead in steady state
+PSO vs FIXED_HEALTH,51.46,47.37,4.09,0.3354,7.3750e-01,2.3129e-08,0.0202,PSO adds ~3-5ms routing overhead in steady state
+PSO vs PSO_LINEAR_FITNESS,51.46,53.52,-2.06,-1.4124,1.5873e-01,1.4244e-09,-0.0953,PSO latency competitive
+PSO vs PSO_WITHOUT_SOFTMAX,51.46,54.44,-2.98,-1.6245,1.0510e-01,4.2966e-10,-0.1069,PSO latency competitive

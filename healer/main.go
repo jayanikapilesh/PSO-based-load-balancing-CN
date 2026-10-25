@@ -12,7 +12,7 @@ import (
 func monitorService(name string, url string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	cooldown := 2 * time.Second
+	cooldown := 5 * time.Second
 	lastRestart := time.Time{}
 	client := http.Client{
 		Timeout: 500 * time.Millisecond,
@@ -25,8 +25,8 @@ func monitorService(name string, url string, wg *sync.WaitGroup) {
 		if err == nil {
 			resp.Body.Close()
 			if resp.StatusCode == 200 {
-				// Record recovery if a valid cooldown elapsed since last restart
-				if !lastRestart.IsZero() && time.Since(lastRestart) > cooldown {
+				// Record recovery immediately once healthy
+				if !lastRestart.IsZero() {
 					recoveryTime := time.Since(lastRestart).Seconds()
 					log.Printf("RECOVERED: %s (%.1fs)", name, recoveryTime)
 					lastRestart = time.Time{} // Reset recovered state
@@ -35,21 +35,20 @@ func monitorService(name string, url string, wg *sync.WaitGroup) {
 			}
 		}
 
-		// Prevent restart loops
+		// Prevent duplicate restart storm while container is rebooting during cooldown
 		if !lastRestart.IsZero() && time.Since(lastRestart) < cooldown {
 			continue
 		}
 
 		log.Printf("FAILURE DETECTED: %s", name)
 		log.Printf("RESTARTING: %s", name)
+		lastRestart = time.Now()
 
 		cmd := exec.Command("docker", "restart", name)
 		err = cmd.Run()
 		if err != nil {
 			log.Printf("Failed to restart %s: %v", name, err)
 		}
-
-		lastRestart = time.Now()
 	}
 }
 

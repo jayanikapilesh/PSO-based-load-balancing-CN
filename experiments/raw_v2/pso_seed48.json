@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "timestamp": "2026-10-24T15:48:25.392Z",
+    "algorithm": "PSO",
+    "experimentType": "standard",
+    "duration": 30,
+    "targetRps": 5,
+    "seed": 48,
+    "lbUrl": "http://localhost:4000",
+    "chaosTarget": null,
+    "chaosTime": null,
+    "actualDurationSec": 30.122
+  },
+  "summary": {
+    "offeredRequests": 147,
+    "completedRequests": 147,
+    "successfulRequests": 147,
+    "failedRequests": 0,
+    "totalRequests": 147,
+    "totalErrors": 0,
+    "offeredRps": 4.88,
+    "throughput": 4.88,
+    "avgLatency": 52.5,
+    "p95Latency": 372,
+    "errorRate": 0
+  },
+  "perSecond": [
+    {
+      "second": 0,
+      "requests": 4,
+      "errors": 0,
+      "avgLatency": 19,
+      "p95Latency": 20
+    },
+    {
+      "second": 1,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 19,
+      "p95Latency": 23
+    },
+    {
+      "second": 2,
+      "requests": 3,
+      "errors": 0,
+      "avgLatency": 19.666666666666668,
+      "p95Latency": 24
+    },
+    {
+      "second": 3,
+      "requests": 7,
+      "errors": 0,
+      "avgLatency": 125.42857142857143,
+      "p95Latency": 474
+    },
+    {
+      "second": 4,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18.6,
+      "p95Latency": 21
+    },
+    {
+      "second": 5,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 17.8,
+      "p95Latency": 20
+    },
+    {
+      "second": 6,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18.8,
+      "p95Latency": 21
+    },
+    {
+      "second": 7,
+      "requests": 2,
+      "errors": 0,
+      "avgLatency": 19,
+      "p95Latency": 22
+    },
+    {
+      "second": 8,
+      "requests": 8,
+      "errors": 0,
+      "avgLatency": 150.875,
+      "p95Latency": 569
+    },
+    {
+      "second": 9,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18.6,
+      "p95Latency": 21
+    },
+    {
+      "second": 10,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 17.8,
+      "p95Latency": 19
+    },
+    {
+      "second": 11,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 19.2,
+      "p95Latency": 26
+    },
+    {
+      "second": 12,
+      "requests": 4,
+      "errors": 0,
+      "avgLatency": 73.75,
+      "p95Latency": 224
+    },
+    {
+      "second": 13,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 103.2,
+      "p95Latency": 442
+    },
+    {
+      "second": 14,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 19.4,
+      "p95Latency": 21
+    },
+    {
+      "second": 15,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 20.2,
+      "p95Latency": 23
+    },
+    {
+      "second": 16,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18.8,
+      "p95Latency": 21
+    },
+    {
+      "second": 17,
+      "requests": 2,
+      "errors": 0,
+      "avgLatency": 17.5,
+      "p95Latency": 18
+    },
+    {
+      "second": 18,
+      "requests": 8,
+      "errors": 0,
+      "avgLatency": 167.125,
+      "p95Latency": 616
+    },
+    {
+      "second": 19,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 17.8,
+      "p95Latency": 20
+    },
+    {
+      "second": 20,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18.4,
+      "p95Latency": 19
+    },
+    {
+      "second": 21,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 19.6,
+      "p95Latency": 24
+    },
+    {
+      "second": 22,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 186.2,
+      "p95Latency": 504
+    },
+    {
+      "second": 23,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 16.8,
+      "p95Latency": 18
+    },
+    {
+      "second": 24,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 17.6,
+      "p95Latency": 20
+    },
+    {
+      "second": 25,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18.2,
+      "p95Latency": 19
+    },
+    {
+      "second": 26,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18,
+      "p95Latency": 22
+    },
+    {
+      "second": 27,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 123.6,
+      "p95Latency": 385
+    },
+    {
+      "second": 28,
+      "requests": 5,
+      "errors": 0,
+      "avgLatency": 18,
+      "p95Latency": 19
+    },
+    {
+      "second": 29,
+      "requests": 4,
+      "errors": 0,
+      "avgLatency": 16.25,
+      "p95Latency": 17
+    }
+  ]
+}

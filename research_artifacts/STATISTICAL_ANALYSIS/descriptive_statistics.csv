@@ -1,0 +1,11 @@
+Algorithm,Condition,Target_RPS,Runs,Throughput_Mean,Throughput_Std,Throughput_CI95,Latency_Mean_ms,Latency_Std_ms,Latency_CI95_ms,Latency_Median_ms,Latency_IQR_ms,P95_Mean_ms,P95_Std_ms,ErrorRate_Mean_pct,ErrorRate_Std_pct
+FIXED_HEALTH,standard,5,1,4.9,0.0,0.0,47.37,0.0,0.0,47.37,0.0,67.0,0.0,0.0,0.0
+LEAST_CONNECTIONS,standard,5,1,4.917,0.0,0.0,46.51,0.0,0.0,46.51,0.0,67.0,0.0,0.0,0.0
+PSO,healing_off,5,1,4.892,0.0,0.0,616.62,0.0,0.0,616.62,0.0,620.0,0.0,98.1261,0.0
+PSO,healing_on,5,1,4.908,0.0,0.0,143.0,0.0,0.0,143.0,0.0,616.0,0.0,7.8098,0.0
+PSO,standard,5,10,4.874,0.013,0.01,51.46,3.52,2.51,51.91,4.52,332.7,33.29,0.0,0.0
+PSO,standard,10,1,9.15,0.0,0.0,46.54,0.0,0.0,46.54,0.0,66.0,0.0,0.0,0.0
+PSO,standard,20,1,16.183,0.0,0.0,41.78,0.0,0.0,41.78,0.0,56.0,0.0,0.0,0.0
+PSO_LINEAR_FITNESS,standard,5,1,4.9,0.0,0.0,53.52,0.0,0.0,53.52,0.0,86.0,0.0,0.0,0.0
+PSO_WITHOUT_SOFTMAX,standard,5,1,4.9,0.0,0.0,54.44,0.0,0.0,54.44,0.0,79.0,0.0,0.0,0.0
+ROUND_ROBIN,standard,5,1,4.917,0.0,0.0,49.29,0.0,0.0,49.29,0.0,67.0,0.0,0.0,0.0

@@ -4,6 +4,8 @@ services:
     build: ./api
     container_name: api1
     restart: always
+    depends_on:
+      - ml-api
     environment:
       - INSTANCE_NAME=api1
       - ERROR_RATE_WINDOW_S=60
@@ -12,6 +14,8 @@ services:
     build: ./api
     container_name: api2
     restart: always
+    depends_on:
+      - ml-api
     environment:
       - INSTANCE_NAME=api2
       - ERROR_RATE_WINDOW_S=60
@@ -20,6 +24,8 @@ services:
     build: ./api
     container_name: api3
     restart: always
+    depends_on:
+      - ml-api
     environment:
       - INSTANCE_NAME=api3
       - ERROR_RATE_WINDOW_S=60

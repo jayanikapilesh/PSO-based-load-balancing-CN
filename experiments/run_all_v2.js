@@ -38,7 +38,7 @@ async function main() {
     console.log('\n--- Section 1: PSO Seeds 42-51 ---');
     for (let seed = 42; seed <= 51; seed++) {
         const out = path.join(RAW_DIR, `pso_seed${seed}.json`);
-        const cmd = `node experiments/run_experiment.js --algorithm PSO --duration 30 --rps 5 --seed ${seed} --output ${out}`;
+        const cmd = `node experiments/run_experiment.js --algorithm PSO --duration 30 --rps 5 --seed ${seed} --output "${out}"`;
         runCmd(cmd);
     }
 
@@ -46,20 +46,20 @@ async function main() {
     console.log('\n--- Section 2: Load Scalability ---');
     for (const rps of [5, 10, 20]) {
         const out = path.join(RAW_DIR, `pso_rps${rps}.json`);
-        const cmd = `node experiments/run_experiment.js --algorithm PSO --duration 30 --rps ${rps} --seed 42 --output ${out}`;
+        const cmd = `node experiments/run_experiment.js --algorithm PSO --duration 30 --rps ${rps} --seed 42 --output "${out}"`;
         runCmd(cmd);
     }
 
     // ── 3. Ablation Experiments ───────────────────────────────────────────────
     console.log('\n--- Section 3: Ablation Experiments ---');
-    runCmd(`node experiments/run_experiment.js --algorithm PSO_LINEAR_FITNESS --duration 30 --rps 5 --seed 42 --output ${path.join(RAW_DIR, 'pso_linear.json')}`);
-    runCmd(`node experiments/run_experiment.js --algorithm PSO_WITHOUT_SOFTMAX --duration 30 --rps 5 --seed 42 --output ${path.join(RAW_DIR, 'pso_nosoftmax.json')}`);
+    runCmd(`node experiments/run_experiment.js --algorithm PSO_LINEAR_FITNESS --duration 30 --rps 5 --seed 42 --output "${path.join(RAW_DIR, 'pso_linear.json')}"`);
+    runCmd(`node experiments/run_experiment.js --algorithm PSO_WITHOUT_SOFTMAX --duration 30 --rps 5 --seed 42 --output "${path.join(RAW_DIR, 'pso_nosoftmax.json')}"`);
 
     // ── 4. Baselines ──────────────────────────────────────────────────────────
     console.log('\n--- Section 4: Baseline Algorithms ---');
-    runCmd(`node experiments/run_experiment.js --algorithm ROUND_ROBIN --duration 30 --rps 5 --seed 42 --output ${path.join(RAW_DIR, 'round_robin.json')}`);
-    runCmd(`node experiments/run_experiment.js --algorithm LEAST_CONNECTIONS --duration 30 --rps 5 --seed 42 --output ${path.join(RAW_DIR, 'least_connections.json')}`);
-    runCmd(`node experiments/run_experiment.js --algorithm FIXED_HEALTH --duration 30 --rps 5 --seed 42 --output ${path.join(RAW_DIR, 'fixed_health.json')}`);
+    runCmd(`node experiments/run_experiment.js --algorithm ROUND_ROBIN --duration 30 --rps 5 --seed 42 --output "${path.join(RAW_DIR, 'round_robin.json')}"`);
+    runCmd(`node experiments/run_experiment.js --algorithm LEAST_CONNECTIONS --duration 30 --rps 5 --seed 42 --output "${path.join(RAW_DIR, 'least_connections.json')}"`);
+    runCmd(`node experiments/run_experiment.js --algorithm FIXED_HEALTH --duration 30 --rps 5 --seed 42 --output "${path.join(RAW_DIR, 'fixed_health.json')}"`);
 
     // ── 5. Self-Healing Experiment (Healing ON vs Healing OFF) ────────────────
     console.log('\n--- Section 5: Self-Healing Experiment ---');
@@ -73,19 +73,8 @@ async function main() {
     try { execSync('docker start healer'); } catch {}
     await new Promise(r => setTimeout(r, 2000));
 
-    // Trigger chaos stop on api2 after 5s during run
-    setTimeout(() => {
-        console.log('[Chaos Injection] Stopping api2 (Healing ON)...');
-        try { execSync('docker stop api2'); } catch {}
-    }, 5000);
-
     const healingOnOut = path.join(RAW_DIR, 'healing_on.json');
-    runCmd(`node experiments/run_experiment.js --algorithm PSO --duration 35 --rps 5 --seed 42 --output ${healingOnOut}`);
-
-    // Read healing_on file and mark experimentType = 'healing_on'
-    const hOnData = JSON.parse(fs.readFileSync(healingOnOut, 'utf-8'));
-    hOnData.meta.experimentType = 'healing_on';
-    fs.writeFileSync(healingOnOut, JSON.stringify(hOnData, null, 2));
+    runCmd(`node experiments/run_experiment.js --algorithm PSO --duration 35 --rps 5 --seed 42 --chaos-target api2 --chaos-time 5 --experiment-type healing_on --output "${healingOnOut}"`);
 
     // Ensure api containers recovered
     try { execSync('docker start api1 api2 api3'); } catch {}
@@ -96,19 +85,8 @@ async function main() {
     try { execSync('docker stop healer'); } catch {}
     await new Promise(r => setTimeout(r, 2000));
 
-    // Trigger chaos stop on api2 after 5s during run
-    setTimeout(() => {
-        console.log('[Chaos Injection] Stopping api2 (Healing OFF)...');
-        try { execSync('docker stop api2'); } catch {}
-    }, 5000);
-
     const healingOffOut = path.join(RAW_DIR, 'healing_off.json');
-    runCmd(`node experiments/run_experiment.js --algorithm PSO --duration 35 --rps 5 --seed 42 --output ${healingOffOut}`);
-
-    // Read healing_off file and mark experimentType = 'healing_off'
-    const hOffData = JSON.parse(fs.readFileSync(healingOffOut, 'utf-8'));
-    hOffData.meta.experimentType = 'healing_off';
-    fs.writeFileSync(healingOffOut, JSON.stringify(hOffData, null, 2));
+    runCmd(`node experiments/run_experiment.js --algorithm PSO --duration 35 --rps 5 --seed 42 --chaos-target api2 --chaos-time 5 --experiment-type healing_off --output "${healingOffOut}"`);
 
     // Restore healer container
     try { execSync('docker start healer api1 api2 api3'); } catch {}
@@ -116,11 +94,11 @@ async function main() {
 
     // ── 6. Overhead Benchmark ─────────────────────────────────────────────────
     console.log('\n--- Section 6: Overhead Benchmark ---');
-    runCmd(`node experiments/measure_overhead.js --lb-url http://localhost:4000 --output ${path.join(PROC_DIR, 'overhead.json')}`);
+    runCmd(`node experiments/measure_overhead.js --lb-url http://localhost:4000 --output "${path.join(PROC_DIR, 'overhead.json')}"`);
 
     // ── 7. Aggregate Statistical Summaries ───────────────────────────────────
     console.log('\n--- Section 7: Statistical Summaries Generation ---');
-    runCmd(`node experiments/collect_results.js --input ${RAW_DIR} --output ${path.join(PROC_DIR, 'summary.csv')}`);
+    runCmd(`node experiments/collect_results.js --input "${RAW_DIR}" --output "${path.join(PROC_DIR, 'summary.csv')}"`);
 
     console.log('\n✅ ALL EXPERIMENTS COMPLETED SUCCESSFULLY!');
 }

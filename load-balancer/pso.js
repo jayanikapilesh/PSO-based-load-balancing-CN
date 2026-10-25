@@ -230,8 +230,31 @@ function runPSO(healthNodes, useLinear = false) {
     // Normalize metrics across healthy nodes
     const nodesNorm = normalizeMetrics(healthNodes);
 
-    // Reinitialize swarm for each current health-state cycle to prevent stale pbest/gbest state
-    initSwarm();
+    // Initialize swarm on first run or when reset; in ongoing runs, re-evaluate
+    // existing particles and gbest under the current metric landscape.
+    if (!swarm || swarm.length === 0) {
+        initSwarm();
+    } else {
+        if (gbest) {
+            gbestFitness = evaluateObjective(nodesNorm, posToWeights(gbest), useLinear);
+            gbestWeights = posToWeights(gbest);
+        } else {
+            gbestFitness = Infinity;
+        }
+        for (const particle of swarm) {
+            particle.pbestFitness = evaluateObjective(nodesNorm, posToWeights(particle.pbest), useLinear);
+            const curFit = evaluateObjective(nodesNorm, posToWeights(particle.position), useLinear);
+            if (curFit < particle.pbestFitness) {
+                particle.pbestFitness = curFit;
+                particle.pbest = [...particle.position];
+            }
+            if (particle.pbestFitness < gbestFitness) {
+                gbestFitness = particle.pbestFitness;
+                gbest = [...particle.pbest];
+                gbestWeights = posToWeights(gbest);
+            }
+        }
+    }
 
     optimizationCycle++;
     const cycle = optimizationCycle;
